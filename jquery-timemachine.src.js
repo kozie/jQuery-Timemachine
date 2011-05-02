@@ -15,7 +15,10 @@
     var jqTimemachine = function(ver, callback) {
         
         return new jqTimemachine.fn.init(ver, callback);
-    };
+    },
+    
+    // Declare legal window.document
+    doc = window.document;
     
     // Define the time machine function
     jqTimemachine.fn = jqTimemachine.prototype = {
@@ -63,7 +66,7 @@
                 var url = this.scriptBaseUrl.replace('__VER__', ver);
                 
                 // Load the jQuery version dynamically
-                this.wget(url, function() {
+                this.load(url, function() {
                    
                    // Get the jquery version and rip it out of the window
                    var jq = jQuery.noConflict(true);
@@ -111,8 +114,31 @@
             return ver.replace('.', '');
         },
         
-        wget: function(url, callback) {
+        // This function is derived from the scriptTag method in
+        // HeadJS by Tero Piirainen
+        load: function(url, callback) {
             
+            // Create script element and configure
+            var script = doc.createElement('script');
+            script.type = 'text/javascript';
+            script.async = false;
+            script.onreadystatechange = script.onload = function() {
+                
+                // Get the state, if possible
+                var state = script.readyState;
+                
+                if (!callback.done && (!state || /loaded|complete/.test(state))) {
+                    
+                    callback();
+                    callback.done = true;
+                }
+            };
+            
+            // Load the script
+            script.src = url;
+            
+            // Append the script to the head element
+            doc.getElementsByTagName('head')[0].appendChild(script);
         }
     };
     
