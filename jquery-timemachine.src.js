@@ -121,9 +121,6 @@
         // HeadJS by Tero Piirainen
         load: function(url, callback) {
             
-            // Save this in var
-            var t = this;
-            
             // Create script element and configure
             var script = doc.createElement('script');
             script.type = 'text/javascript';
@@ -135,7 +132,7 @@
                 
                 if (!callback.done && (!state || /loaded|complete/.test(state))) {
                     
-                    callback.call(t);
+                    callback.call(jqTimemachine.fn);
                     callback.done = true;
                 }
             };
