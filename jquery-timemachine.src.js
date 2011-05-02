@@ -42,7 +42,7 @@
             
             // Try to load/get the requested jQuery version
             // and *optionally* run the callback function
-            this.loadJquery(ver, callback);
+            this.loadJQuery(ver, callback);
             
             return this;
         },
@@ -63,7 +63,10 @@
             } else {
                 
                 // Construct the url to the correct jQuery version
-                var url = this.scriptBaseUrl.replace('__VER__', ver);
+                var url = this.scriptBaseUrl.replace('__VER__', ver),
+                
+                // Set fallback to this
+                t = this;
                 
                 // Load the jQuery version dynamically
                 this.load(url, function() {
@@ -103,7 +106,7 @@
             // Loop through the given array
             for (var key in haystack) {
                 
-                if (key == needle) return true;
+                if (haystack[key] == needle) return true;
             }
             
             return false;
@@ -118,6 +121,9 @@
         // HeadJS by Tero Piirainen
         load: function(url, callback) {
             
+            // Save this in var
+            var t = this;
+            
             // Create script element and configure
             var script = doc.createElement('script');
             script.type = 'text/javascript';
@@ -129,7 +135,7 @@
                 
                 if (!callback.done && (!state || /loaded|complete/.test(state))) {
                     
-                    callback();
+                    callback.call(t);
                     callback.done = true;
                 }
             };
@@ -141,6 +147,9 @@
             doc.getElementsByTagName('head')[0].appendChild(script);
         }
     };
+    
+    // Set correct reference of the current scope
+    jqTimemachine.fn.init.prototype = jqTimemachine.fn;
     
     // Define the functions into the global scope
     window.jQueryTimemachine = window.jtm = jqTimemachine;
