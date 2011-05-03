@@ -5,7 +5,7 @@
  * certain jQuery version.
  * 
  * @author  Koos van Egmond <flamefingers at gmail dot com>
- * @version 1.0
+ * @version 1.1
  **/
  
 // Set own function scope
@@ -23,8 +23,10 @@
     // Define the time machine function
     jqTimemachine.fn = jqTimemachine.prototype = {
         
+        // Link the constructor
         constructor: jqTimemachine,
         
+        // A list of valid jQuery versions, hosted by Google's CDN
         validVersions: [
             '1.2.3', '1.2.6',
             '1.3.0', '1.3.1', '1.3.2',
@@ -32,9 +34,13 @@
             '1.5.0', '1.5.1', '1.5.2'
         ],
         
+        // An object to store loaded jQuery version in
         loadedVersions: {},
+        
+        // The base URL to load jQuery from Google's CDN
         scriptBaseUrl: 'https://ajax.googleapis.com/ajax/libs/jquery/__VER__/jquery.min.js',
         
+        // The init function to launch the rocket ;)
         init: function(ver, callback) {
             
             // Return false if no version was given
@@ -47,6 +53,8 @@
             return this;
         },
         
+        // Variable function to run the callback in the requested
+        // version of jQuery
         loadJQuery: function(ver, callback) {
             
             // Check if the requested version is legitimate
@@ -63,19 +71,17 @@
             } else {
                 
                 // Construct the url to the correct jQuery version
-                var url = this.scriptBaseUrl.replace('__VER__', ver),
-                
-                // Set fallback to this
-                t = this;
+                var url = this.scriptBaseUrl.replace('__VER__', ver);
                 
                 // Load the jQuery version dynamically
                 this.load(url, function() {
                    
                    // Get the jquery version and rip it out of the window
-                   var jq = jQuery.noConflict(true);
+                   var jq = window.jQuery.noConflict(true);
                    
                    // Put it in the loaded version stack
-                   this.loadedVersions[this.verKeyName(ver)] = jq;
+                   ver = jqTimemachine.fn.verKeyName(ver);
+                   jqTimemachine.fn.loadedVersions[ver] = jq;
                    
                    // Return the callback function
                    if ('function' == typeof callback) callback.call(jq,jq,jq);
@@ -83,21 +89,27 @@
             }
         },
         
+        // Function to get an already loaded version of jQuery
         getVersion: function(ver) {
           
-            return this.loadedVersion[this.verKeyName(ver)];
+            return this.loadedVersions[this.verKeyName(ver)];
         },
         
+        // Function to check if a requested version is available
         isValid: function(ver) {
             
             return this.inArray(ver, this.validVersions);
         },
         
+        // Function to check if a version of jQuery is already loaded
         isLoaded: function(ver) {
           
-            return this.inArray(this.verKeyName(ver), this.loadedVersions);
+            ver = this.verKeyName(ver);
+            return (undefined !== this.loadedVersions[ver]);
         },
         
+        // Simple inArray function to search for the presence of needle
+        // in haystack
         inArray: function(needle, haystack) {
             
             // Return if either one of two is undefined
@@ -112,12 +124,25 @@
             return false;
         },
         
+        // Simple function to remove the dots from the versio number
+        // to use as friendly keynames for arrays
         verKeyName: function(ver) {
             
-            return ver.replace('.', '');
+            return 'v'+ver.replace(/\./g, '');
         },
         
-        // This function is derived from the scriptTag method in
+        // Function to remove a loaded version of jQuery
+        reset: function(ver) {
+        
+            ver = this.verKeyName(ver);
+            if (this.loadedVersions[ver] !== undefined) {
+                delete this.loadedVersions[ver];
+            }
+        },
+        
+        // Function to load an external script and execute a function
+        // when done loading
+        // NOTE: This function is derived from the scriptTag method in
         // HeadJS by Tero Piirainen
         load: function(url, callback) {
             
@@ -149,5 +174,5 @@
     jqTimemachine.fn.init.prototype = jqTimemachine.fn;
     
     // Define the functions into the global scope
-    window.jQueryTimemachine = window.jtm = jqTimemachine;
+    window.jqTimemachine = window.jtm = jqTimemachine;
 })(window);

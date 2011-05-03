@@ -3,15 +3,19 @@
 <script src="jquery-timemachine.src.js"></script>
 <script>
     jtm('1.2.6', function(jQuery, $) {
-        alert(this.fn.jquery);
+        alert('This is executed in the callback of jQuery version '+this.fn.jquery);
     });
     
-    jQueryTimemachine('1.3.2', function(jQuery, $) {
-        alert(jQuery.fn.jquery);
+    jqTimemachine('1.3.2', function(jQuery, $) {
+        alert('This is executed in the callback of jQuery version '+jQuery.fn.jquery);
+    });
+    
+    jqTimemachine('1.2.6', function(jq, $) {
+        alert('Another time '+jq.fn.jquery);
     });
     
     jtm('1.5.0', function(jQuery, $) {
-        alert($.fn.jquery);
+        alert('This is executed in the callback of jQuery version '+$.fn.jquery);
         
         // Check the jquery in the global scope
         alert('jQuery version in global scope, executed in timemachine callback: '+window.jQuery.fn.jquery);
