@@ -1,6 +1,6 @@
 <!doctype html>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
-<script src="jquery-timemachine.src.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+<script src="jquery-timemachine.min.js"></script>
 <script>
     jtm('1.2.6', function(jQuery, $) {
         alert('This is executed in the callback of jQuery version '+this.fn.jquery);
@@ -19,6 +19,12 @@
         
         // Check the jquery in the global scope
         alert('jQuery version in global scope, executed in timemachine callback: '+window.jQuery.fn.jquery);
+    });
+    
+    jtm('12.0.1', function(jQuery, $) {
+        
+        // following alert should not run, Check ur console
+        alert('current loaded version does not exist.');
     });
     
     if (typeof jQuery != 'undefined')
