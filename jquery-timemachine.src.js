@@ -5,7 +5,7 @@
  * certain jQuery version.
  * 
  * @author  Koos van Egmond <flamefingers at gmail dot com>
- * @version 1.1
+ * @version 1.2
  **/
  
 // Set own function scope
