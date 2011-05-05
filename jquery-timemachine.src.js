@@ -31,7 +31,8 @@
             '1.2.3', '1.2.6',
             '1.3.0', '1.3.1', '1.3.2',
             '1.4.0', '1.4.1', '1.4.2', '1.4.3', '1.4.4',
-            '1.5.0', '1.5.1', '1.5.2'
+            '1.5.0', '1.5.1', '1.5.2',
+            '1.6.0'
         ],
         
         // An object to store loaded jQuery version in
@@ -58,7 +59,12 @@
         loadJQuery: function(ver, callback) {
             
             // Check if the requested version is legitimate
-            if (!this.isValid(ver)) return;
+            if (!this.isValid(ver)) {
+            
+                // Warn the user in the console and stop
+                this.report('Requested version '+ver+' not available', 'warn');
+                return;
+            }
             
             // Check if the version was already loaded
             if (this.isLoaded(ver)) {
@@ -138,6 +144,26 @@
             if (this.loadedVersions[ver] !== undefined) {
                 delete this.loadedVersions[ver];
             }
+        },
+        
+        // Function to report to the console, if possible
+        report: function(msg, type) {
+            
+            // Return false if no console exists
+            if (undefined === window.console) return;
+            
+            // Set default type
+            if (! /^(log|warn|error)$/.test(type)) type = 'log';
+            
+            // Check if the function does exists and do the
+            // reporting to the error
+            if (typeof window.console[type] != 'undefined') {
+                
+                // Prepend msg with jqTimemachine and return
+                (window.console[type])('jqTimemachine: '+msg);
+            }
+            
+            return this;
         },
         
         // Function to load an external script and execute a function
