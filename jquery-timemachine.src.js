@@ -5,20 +5,17 @@
  * certain jQuery version.
  * 
  * @author  Koos van Egmond <flamefingers at gmail dot com>
- * @version 1.2
+ * @version 1.3
  **/
  
 // Set own function scope
-(function(window, undefined) {
+(function(window, doc, undefined) {
     
     // Declare the main jqTimemachine function
     var jqTimemachine = function(ver, callback) {
         
         return new jqTimemachine.fn.init(ver, callback);
-    },
-    
-    // Declare legal window.document
-    doc = window.document;
+    };
     
     // Define the time machine function
     jqTimemachine.fn = jqTimemachine.prototype = {
@@ -28,6 +25,7 @@
         
         // A list of valid jQuery versions, hosted by Google's CDN
         validVersions: [
+            '1.2', '1.3', '1.4', '1.5', '1.6', 
             '1.2.3', '1.2.6',
             '1.3.0', '1.3.1', '1.3.2',
             '1.4.0', '1.4.1', '1.4.2', '1.4.3', '1.4.4',
@@ -196,9 +194,11 @@
         }
     };
     
-    // Set correct reference of the current scope
+    // Current function of the timemachine is also it's prototype.
+    // This is required for later references to the script
     jqTimemachine.fn.init.prototype = jqTimemachine.fn;
     
-    // Define the functions into the global scope
+    // Define the timemachine into the global scope
     window.jqTimemachine = window.jtm = jqTimemachine;
-})(window);
+    
+})(window, window.document);
